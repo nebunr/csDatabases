@@ -15,7 +15,7 @@ all: $(O_FILES)
 	$(CC) $(CXXFLAGS) -o pa1 $(O_FILES) #$(LIBS)
 
 main.o: main.cpp
-	$(CC) $(CXXFLAGS) -c main.cpp -o main.o #$(INCLUDES)
+	$(CC) $(CXXFLAGS) -c main.cpp -o main.o #$(INCLUDESa)
 
 clean:
 	-@if rm pa1 2>/dev/null || true; then echo "Main Removed"; else echo "No Main"; fi
