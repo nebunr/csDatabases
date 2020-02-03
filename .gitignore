@@ -31,3 +31,6 @@
 *.out
 *.app
 pa1
+
+# Folders
+.vscode/
