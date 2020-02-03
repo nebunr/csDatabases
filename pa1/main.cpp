@@ -1,4 +1,4 @@
-//make; ./pa1 PA1_test.sql
+//make; ./pa PA1_test.sql
 #include <iostream>
 #include <fstream>
 using namespace std;
