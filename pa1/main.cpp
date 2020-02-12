@@ -19,14 +19,14 @@ int main(int argc, char** argv)
     {
         std::cerr << error << '\n';
     }
+    
     ifstream sqlFile;
     sqlFile.open(argv[1]);
-    //make; ./pa PA1_test.sql
-    cout << "testing: " << argv[1] << endl;
-    TestFunc();
-    
+    if(sqlFile.is_open())
+    {
+        ReadFile(sqlFile);
+    }
     sqlFile.close();
     
     return 0;
 }
-//End of Program
