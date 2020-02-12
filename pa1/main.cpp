@@ -1,7 +1,11 @@
-//make; ./pa PA1_test.sql
-#include <iostream>
-#include <fstream>
+//main.cpp
+//By: Benjamin Estela
+
+//Header Files
+#include "parser.h"
 using namespace std;
+
+//Main Function
 int main(int argc, char** argv)
 {
     try
@@ -11,16 +15,18 @@ int main(int argc, char** argv)
             throw "No filename found.";
         }
     }
-    catch(const std::exception& e)
+    catch(const char* error)
     {
-        std::cerr << e.what() << '\n';
+        std::cerr << error << '\n';
     }
     ifstream sqlFile;
     sqlFile.open(argv[1]);
-    
+    //make; ./pa PA1_test.sql
     cout << "testing: " << argv[1] << endl;
+    TestFunc();
     
     sqlFile.close();
     
     return 0;
 }
+//End of Program
