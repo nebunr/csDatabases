@@ -10,20 +10,22 @@ void ReadFile(ifstream &file)
 {
     int i = 0;
     string strInput;
+    string temp;
     while(!file.eof())
     {
         i++;
         getline(file, strInput, '\n');
-        transform(strInput.begin(), strInput.end(), strInput.begin(), ::toupper);
+        temp = strInput;
+        transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
         //For end of .sql file
-        if(strInput.find(".EXIT") != string::npos)
+        if(temp.find(".EXIT") != string::npos)
         {
             //End reading file
             cout << "All done." << endl;
             break;
         }
         //For comments
-        else if ((strInput.find("--") != string::npos) || (strInput.find(";") == string::npos))
+        else if ((temp.find("--") != string::npos) || (temp.find(";") == string::npos))
         {
             //Do nothing
             //NOTE: 
@@ -34,13 +36,17 @@ void ReadFile(ifstream &file)
         else
         {
             //String parsing
-            //cout << strInput << endl;
+            ParseCommand(strInput);
+            //send command to commands function(s)
         }
     }
     //cout << i;
     return;
 }
-void ParseCommand()
+void ParseCommand(string str)
 {
+    //for toupper, just set the commands toupper and leave the vars, etc. as normal
+    //transform(strInput.begin(), strInput.end(), strInput.begin(), ::toupper);
+    //cout << str << endl;
     return;
 }
