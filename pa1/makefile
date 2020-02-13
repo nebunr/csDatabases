@@ -4,7 +4,7 @@ CC=g++
 # Compiler Flags
 CXXFLAGS=-std=c++11
 
-# .o Compilation
+# Files for Compilation
 FILES=main.cpp parser.cpp
 
 all: $(O_FILES)
