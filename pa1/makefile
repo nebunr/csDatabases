@@ -1,4 +1,4 @@
-# makefile
+\\# makefile
 CC=g++
 
 # Compiler Flags
@@ -7,7 +7,7 @@ CXXFLAGS=-std=c++11
 # Files for Compilation
 FILES=main.cpp parser.cpp
 
-all: $(O_FILES)
+all: $(FILES)
 	$(CC) $(CXXFLAGS) $(FILES) -o pa 
 
 clean:
