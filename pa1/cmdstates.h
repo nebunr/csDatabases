@@ -1,4 +1,4 @@
-//Header File
+//Header File for Command States
 //By: Benjamin Estela
 
 //Precompiler Directives

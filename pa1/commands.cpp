@@ -3,7 +3,6 @@
 
 //Header Files
 #include "commands.h"
-#include "cmdstates.h"
 using namespace std;
 
 //Class Function Implementation
@@ -21,7 +20,7 @@ Commands::Commands(int command, string line)
     m_line = line;
 }
 
-//Complete Destructor
+//Destructor (not fully implemented)
 Commands::~Commands(){}
 
 //CREATE DATABASE
@@ -57,6 +56,7 @@ void Commands::DropDatabase()
     int len = tempVar.length();
     char fileName[len + 1];
     strcpy(fileName, tempVar.c_str());
+    //rmdir removes folder
     if(rmdir(fileName) == -1)
     {
         cerr << "!Failed to delete " << fileName << " because it does not exist." << endl;
@@ -77,6 +77,7 @@ void Commands::Use()
     int len = tempVar.length();
     char folderName[len + 1];
     strcpy(folderName, tempVar.c_str());
+    //chdir is basically cd in bash
     if(chdir(folderName) == -1)
     {
         //error handling that chdir's one folder back
@@ -146,6 +147,7 @@ void Commands::DropTable()
     getline(ss, tempVar, ' ');
     getline(ss, tempVar, ' ');
     getline(ss, tempVar, ';'); //temp is now the variable
+    //remove deletes a file
     if(remove(tempVar.c_str()) != 0)
     {
         cerr << "!Failed to delete table " << tempVar.c_str() << " because it does not exist." << endl;
@@ -173,6 +175,8 @@ void Commands::UpdateTable()
     string tempStr = m_line;
     transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::toupper);
 
+    //Can add more ALTER COMMANDS in the future
+    //ADD is basically concat to the end of the table
     if(tempStr.find("ADD") != string::npos)
     {
         getline(ss, tempVar, ' ');
@@ -181,7 +185,7 @@ void Commands::UpdateTable()
         file.open(tableName, ios_base::app);
         if(tempVar.size() >= 1)
         {
-            file << " | " << tempVar; //TODO: better parsing
+            file << " | " << tempVar; //TODO: better parsing for more vars
         }
         
         file.close();
@@ -205,6 +209,8 @@ void Commands::QueryTable()
     getline(ss, tempStr, ' ');
     getline(ss, tempStr, ' ');
     getline(ss, tableName, ';');
+    //This function basically prints out everything in the file
+    //* is used for all and can with more if statements, can be used for different queries
     if(m_line.find(" * ") != string::npos)
     {
         ifstream file;

@@ -14,6 +14,7 @@
 #include <unistd.h> //for rmdir
 
 //Class Prototypes
+//Commands class holds the important variables needed to execute the .sql commands
 class Commands{
     public:
         Commands();
@@ -39,4 +40,5 @@ class Commands{
         std::string m_line;
 };
 
+//Terminating Precompiler Directives
 #endif //COMMANDS_H

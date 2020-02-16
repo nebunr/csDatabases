@@ -10,7 +10,7 @@ using namespace std;
 //Function Implementation
 void ReadFile(ifstream &file)
 {
-    int i = 0; //for counting lines, maybe delete
+    //cmd and strInput are set for the command class
     string strInput;
     string temp;
     int cmd = -1;
@@ -18,7 +18,6 @@ void ReadFile(ifstream &file)
     Commands command;
     while(!file.eof() || !flag)
     {
-        i++;
         getline(file, strInput, '\n');
         temp = strInput;
         transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
@@ -48,6 +47,9 @@ void ReadFile(ifstream &file)
             {
                 command.SetCommand(cmd);
                 command.SetLine(strInput);
+                //For future commands: 
+                //update this and the below function, 
+                //and create relevant command function
                 switch(cmd)
                 {
                     case CREATE_DB:
@@ -78,10 +80,11 @@ void ReadFile(ifstream &file)
             
         }
     }
-    //cout << i;
     return;
 }
 
+//Looks for SQL command to return
+//Uses enum from cmdstates.h
 int ParseCommand(string &str, string &temp)
 {
     if(temp.find("CREATE DATABASE ") != string::npos)
