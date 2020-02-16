@@ -24,7 +24,6 @@ class Commands{
     private:
         int m_command;
         std::string m_line;
-        static bool dirFlag;
 };
 
 #endif //COMMANDS_H
