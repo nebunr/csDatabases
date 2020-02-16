@@ -3,7 +3,7 @@
 ## By: Benjamin Estela (2/20/2020)
 
 ### Overview
-This is a C++ program that manages metadata of an .sql script.   
+This is a C++ program that manages the metadata of an .sql script.   
 
 The current functionalities include:
 - Database creation, delection  
