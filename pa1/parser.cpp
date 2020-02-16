@@ -3,6 +3,8 @@
 
 //Header Files
 #include "parser.h"
+#include "cmdstates.h"
+#include "commands.h"
 using namespace std;
 
 //Function Implementation
@@ -11,7 +13,9 @@ void ReadFile(ifstream &file)
     int i = 0;
     string strInput;
     string temp;
-    while(!file.eof())
+    int command = -1;
+    bool flag = false;
+    while(!file.eof() || !flag)
     {
         i++;
         getline(file, strInput, '\n');
@@ -22,6 +26,7 @@ void ReadFile(ifstream &file)
         {
             //End reading file
             cout << "All done." << endl;
+            flag = true;
             break;
         }
         //For comments
@@ -36,17 +41,58 @@ void ReadFile(ifstream &file)
         else
         {
             //String parsing
-            ParseCommand(strInput);
-            //send command to commands function(s)
+            command = ParseCommand(strInput, temp);
+            //Send command to commands function(s)
+            if(command != -1)
+            {
+                //
+            }
+            
         }
     }
     //cout << i;
     return;
 }
-void ParseCommand(string str)
+int ParseCommand(string &str, string &temp)
 {
-    //for toupper, just set the commands toupper and leave the vars, etc. as normal
-    //transform(strInput.begin(), strInput.end(), strInput.begin(), ::toupper);
-    //cout << str << endl;
-    return;
+    if(temp.find("CREATE DATABASE ") != string::npos)
+    {
+        cout << "createDB" << endl;
+        return CREATE_DB;
+    }
+    else if(temp.find("DROP DATABASE ") != string::npos)
+    {
+        cout << "dropDB\n";
+        return DROP_DB;
+    }
+    else if(temp.find("USE ") != string::npos)
+    {
+        cout << "use\n";
+        return USE;
+    }
+    else if(temp.find("CREATE TABLE ") != string::npos)
+    {
+        cout << "createTABLE\n";
+        return CREATE_TABLE;
+    }
+    else if(temp.find("DROP TABLE ") != string::npos)
+    {
+        cout << "dropTABLE\n";
+        return DROP_TABLE;
+    }
+    else if(temp.find("ALTER TABLE ") != string::npos)
+    {
+        cout << "alterTABLE\n";
+        return ALTER_TABLE;
+    }
+    else if((temp.find("SELECT ") != string::npos) && (temp.find(" FROM") !=string::npos))
+    {
+        cout << "selectFROM\n";
+        return SELECT_FROM;
+    }
+    else
+    {
+        cout << "Invalid command found." << endl;
+        return -1;
+    }
 }

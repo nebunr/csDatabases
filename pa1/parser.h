@@ -12,7 +12,7 @@
 
 //Function Prototypes
 void ReadFile(std::ifstream &file);
-void ParseCommand(std::string str);
+int ParseCommand(std::string &str, std::string &temp);
 
 //Terminating Precompiler Directives
 #endif //PARSER_H

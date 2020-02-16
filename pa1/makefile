@@ -5,7 +5,7 @@ CC=g++
 CXXFLAGS=-std=c++11
 
 # Files for Compilation
-FILES=main.cpp parser.cpp
+FILES=main.cpp parser.cpp commands.cpp
 
 all: $(FILES)
 	$(CC) $(CXXFLAGS) $(FILES) -o pa 
