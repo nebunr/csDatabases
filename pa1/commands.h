@@ -11,7 +11,7 @@
 #include <string> //for strings
 #include <bits/stdc++.h> //for stringstream
 #include <sys/stat.h> //for mkdir
-#include <unistd.h>
+#include <unistd.h> //for rmdir
 
 //Class Prototypes
 class Commands{

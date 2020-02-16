@@ -102,18 +102,55 @@ void Commands::Use()
 //CREATE TABLE
 void Commands::CreateTable()
 {
+    string tempVar;
+    stringstream ss(m_line);
+    getline(ss, tempVar, ' ');
+    getline(ss, tempVar, ' ');
+    getline(ss, tempVar, ' '); //temp is now the variable
+    if(access(tempVar.c_str(), F_OK) != -1)
+    {
+        cerr << "!Failed to create table " << tempVar.c_str() << " because it already exists." << endl;
+    }
+    else
+    {
+        ofstream file;
+        file.open(tempVar.c_str());
+        cout << "Table " << tempVar.c_str() << " created." << endl;
+        getline(ss, tempVar, ';');
+        //TODO: Split up parameters.
+        file << tempVar;
+        file.close();
+        
+    }
+    
     return;
 }
 
 //DROP TABLE
 void Commands::DropTable()
 {
+    string tempVar;
+    stringstream ss(m_line);
+    getline(ss, tempVar, ' ');
+    getline(ss, tempVar, ' ');
+    getline(ss, tempVar, ';'); //temp is now the variable
+    if(remove(tempVar.c_str()) != 0)
+    {
+        cerr << "!Failed to delete table " << tempVar.c_str() << " because it does not exist." << endl;
+    }
+    else
+    {
+        cout << "Table " << tempVar.c_str() << " deleted." << endl;
+    }
+
     return;
 }
 
 //ALTER TABLE (Update)
 void Commands::UpdateTable()
 {
+    string tempStr = m_line;
+    transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::toupper);
     return;
 }
 
