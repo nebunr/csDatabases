@@ -116,9 +116,21 @@ void Commands::CreateTable()
         ofstream file;
         file.open(tempVar.c_str());
         cout << "Table " << tempVar.c_str() << " created." << endl;
+        //Splits up parameters.
+        getline(ss, tempVar, '(');
         getline(ss, tempVar, ';');
-        //TODO: Split up parameters.
-        file << tempVar;
+        string strWrite;
+        strWrite = tempVar.substr(0, tempVar.size() - 1);
+        //replace ", " with " | "
+        size_t startPos = 0;
+        string from = ", ";
+        string to = " | ";
+        while((startPos = strWrite.find(from, startPos)) != string::npos)
+        {
+            strWrite.replace(startPos, from.length(), to);
+            startPos += to.length();
+        }
+        file << strWrite;
         file.close();
         
     }
@@ -167,7 +179,11 @@ void Commands::UpdateTable()
         getline(ss, tempVar, ';');
         ofstream file;
         file.open(tableName, ios_base::app);
-        file << tempVar; //TODO: verify w/spaces and better parsing
+        if(tempVar.size() >= 1)
+        {
+            file << " | " << tempVar; //TODO: better parsing
+        }
+        
         file.close();
         cout << "Table " << tableName << " modified." << endl;
     }
