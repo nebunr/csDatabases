@@ -13,7 +13,7 @@ void ReadFile(ifstream &file)
     int i = 0;
     string strInput;
     string temp;
-    int command = -1;
+    int cmd = -1;
     bool flag = false;
     while(!file.eof() || !flag)
     {
@@ -41,11 +41,33 @@ void ReadFile(ifstream &file)
         else
         {
             //String parsing
-            command = ParseCommand(strInput, temp);
+            cmd = ParseCommand(strInput, temp);
             //Send command to commands function(s)
-            if(command != -1)
+            if(cmd != -1)
             {
-                //
+                Commands command(cmd, strInput);
+                switch(cmd)
+                {
+                    case CREATE_DB:
+                        command.CreateDatabase();
+                        break;
+                    case DROP_DB:
+                        command.DropDatabase();
+                        break;
+                    case USE:
+                        command.Use();
+                        break;
+                    case CREATE_TABLE:
+                        break;
+                    case DROP_TABLE:
+                        break;
+                    case ALTER_TABLE:
+                        break;
+                    case SELECT_FROM:
+                        break;
+                    default:
+                        break;
+                }
             }
             
         }
@@ -57,37 +79,30 @@ int ParseCommand(string &str, string &temp)
 {
     if(temp.find("CREATE DATABASE ") != string::npos)
     {
-        cout << "createDB" << endl;
         return CREATE_DB;
     }
     else if(temp.find("DROP DATABASE ") != string::npos)
     {
-        cout << "dropDB\n";
         return DROP_DB;
     }
     else if(temp.find("USE ") != string::npos)
     {
-        cout << "use\n";
         return USE;
     }
     else if(temp.find("CREATE TABLE ") != string::npos)
     {
-        cout << "createTABLE\n";
         return CREATE_TABLE;
     }
     else if(temp.find("DROP TABLE ") != string::npos)
     {
-        cout << "dropTABLE\n";
         return DROP_TABLE;
     }
     else if(temp.find("ALTER TABLE ") != string::npos)
     {
-        cout << "alterTABLE\n";
         return ALTER_TABLE;
     }
     else if((temp.find("SELECT ") != string::npos) && (temp.find(" FROM") !=string::npos))
     {
-        cout << "selectFROM\n";
         return SELECT_FROM;
     }
     else

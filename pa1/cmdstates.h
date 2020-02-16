@@ -1,9 +1,11 @@
 //Header File
 //By: Benjamin Estela
 
+//Precompiler Directives
 #ifndef CMDSTATES_H
 #define CMDSTATES_H
 
+//Enumeration Declaration
 enum {
     CREATE_DB,
     DROP_DB,
@@ -14,4 +16,5 @@ enum {
     SELECT_FROM,
 };
 
+//Terminating Precompiler Directives
 #endif //CMDSTATES_H
