@@ -149,15 +149,64 @@ void Commands::DropTable()
 //ALTER TABLE (Update)
 void Commands::UpdateTable()
 {
+    string tempVar;
+    stringstream ss(m_line);
+    getline(ss, tempVar, ' ');
+    getline(ss, tempVar, ' ');
+    getline(ss, tempVar, ' '); //temp is now the variable
+    int len = tempVar.length();
+    char tableName[len + 1];
+    strcpy(tableName, tempVar.c_str());
+
     string tempStr = m_line;
     transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::toupper);
+
+    if(tempStr.find("ADD") != string::npos)
+    {
+        getline(ss, tempVar, ' ');
+        getline(ss, tempVar, ';');
+        ofstream file;
+        file.open(tableName, ios_base::app);
+        file << tempVar; //TODO: verify w/spaces and better parsing
+        file.close();
+        cout << "Table " << tableName << " modified." << endl;
+    }
+    else
+    {
+        cerr << "!Failed to alter table" << tableName << "due to invalid command." << endl;
+    }
+    
     return;
 }
 
 //SELECT * TABLE (Query)
 void Commands::QueryTable()
 {
-    //* = all?
+    string tempStr;
+    string tableName;
+    stringstream ss(m_line);
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tableName, ';');
+    if(m_line.find(" * ") != string::npos)
+    {
+        ifstream file;
+        file.open(tableName);
+        if(file.is_open())
+        {
+            while(getline(file, tempStr))
+            {
+                cout << tempStr << endl;
+            }
+        }
+        else
+        {
+            cerr << "!Failed to query table " << tableName << " because it does not exist." << endl;
+        }
+        file.close();
+    }
+
     return;
 }
 

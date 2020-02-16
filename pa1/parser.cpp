@@ -10,7 +10,7 @@ using namespace std;
 //Function Implementation
 void ReadFile(ifstream &file)
 {
-    int i = 0;
+    int i = 0; //for counting lines, maybe delete
     string strInput;
     string temp;
     int cmd = -1;
