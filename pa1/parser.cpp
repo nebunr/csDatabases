@@ -15,6 +15,7 @@ void ReadFile(ifstream &file)
     string temp;
     int cmd = -1;
     bool flag = false;
+    Commands command;
     while(!file.eof() || !flag)
     {
         i++;
@@ -45,7 +46,8 @@ void ReadFile(ifstream &file)
             //Send command to commands function(s)
             if(cmd != -1)
             {
-                Commands command(cmd, strInput);
+                command.SetCommand(cmd);
+                command.SetLine(strInput);
                 switch(cmd)
                 {
                     case CREATE_DB:
@@ -58,12 +60,16 @@ void ReadFile(ifstream &file)
                         command.Use();
                         break;
                     case CREATE_TABLE:
+                        command.CreateTable();
                         break;
                     case DROP_TABLE:
+                        command.DropTable();
                         break;
                     case ALTER_TABLE:
+                        command.UpdateTable();
                         break;
                     case SELECT_FROM:
+                        command.QueryTable();
                         break;
                     default:
                         break;
@@ -75,6 +81,7 @@ void ReadFile(ifstream &file)
     //cout << i;
     return;
 }
+
 int ParseCommand(string &str, string &temp)
 {
     if(temp.find("CREATE DATABASE ") != string::npos)

@@ -7,17 +7,22 @@
 using namespace std;
 
 //Class Function Implementation
+//Default Constructor
 Commands::Commands()
 {
     m_command = -1;
     m_line = "";
 }
 
+//Parameterized Constructor
 Commands::Commands(int command, string line)
 {
     m_command = command;
     m_line = line;
 }
+
+//Complete Destructor
+Commands::~Commands(){}
 
 //CREATE DATABASE
 void Commands::CreateDatabase()
@@ -92,4 +97,51 @@ void Commands::Use()
         cout << "Using database " << folderName << "." << endl;
     }
     return;
+}
+
+//CREATE TABLE
+void Commands::CreateTable()
+{
+    return;
+}
+
+//DROP TABLE
+void Commands::DropTable()
+{
+    return;
+}
+
+//ALTER TABLE (Update)
+void Commands::UpdateTable()
+{
+    return;
+}
+
+//SELECT * TABLE (Query)
+void Commands::QueryTable()
+{
+    //* = all?
+    return;
+}
+
+//Set Methods
+void Commands::SetCommand(int command)
+{
+    m_command = command;
+}
+
+void Commands::SetLine(string line)
+{
+    m_line = line;
+}
+
+//Get Methods
+int Commands::GetCommand()
+{
+    return m_command;
+}
+
+string Commands::GetLine()
+{
+    return m_line;
 }

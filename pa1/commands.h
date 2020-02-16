@@ -18,9 +18,22 @@ class Commands{
     public:
         Commands();
         Commands(int command, std::string line);
+        ~Commands();
+
         void CreateDatabase();
         void DropDatabase();
         void Use();
+        void CreateTable();
+        void DropTable();
+        void UpdateTable();
+        void QueryTable();
+
+        void SetCommand(int command);
+        void SetLine(std::string m_line);
+
+        int GetCommand();
+        std::string GetLine();
+
     private:
         int m_command;
         std::string m_line;
