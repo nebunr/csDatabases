@@ -9,7 +9,7 @@ The current functionalities include:
 - Database creation, delection  
 - Table creation, deletion, update, and query  
 
-This program strictly runs through a filename-argument interface such that in order to run, users must give a proper file name (see below). A design document `name.txt` is included that clarifies how the program organizes multiple databases, manages multiple tables, and how it is all implemented.
+This program strictly runs through a filename-argument interface such that in order to run, users must give a proper file name (see below). A design document `PA1_Design.pdf` is included that clarifies how the program organizes multiple databases, manages multiple tables, and how it is all implemented.
 
 ### Instructions (Linux/Ubuntu)
 Unzip the given `bestela_pa1.zip` source code then navigate to where it has been extracted.

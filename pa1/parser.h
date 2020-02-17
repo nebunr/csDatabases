@@ -6,10 +6,7 @@
 #define PARSER_H
 
 //Header Files
-#include <iostream> //for basic io
-#include <fstream> //for file io
-#include <algorithm> //for toupper
-#include <string> //for strings
+#include "database_headers.h"
 
 //Function Prototypes
 void ReadFile(std::ifstream &file);

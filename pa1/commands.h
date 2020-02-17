@@ -6,12 +6,7 @@
 #define COMMANDS_H
 
 //Header Files
-#include <iostream> //for basic io
-#include <fstream> //for file io
-#include <string> //for strings
-#include <bits/stdc++.h> //for stringstream
-#include <sys/stat.h> //for mkdir
-#include <unistd.h> //for rmdir
+#include "database_headers.h"
 
 //Class Prototypes
 //Commands class holds the important variables needed to execute the .sql commands
