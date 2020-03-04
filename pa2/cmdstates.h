@@ -14,6 +14,12 @@ enum {
     DROP_TABLE,
     ALTER_TABLE,
     SELECT_FROM,
+    INSERT_INTO,
+    UPDATE,
+    SET,
+    FROM,
+    WHERE,
+    DELETE_FROM,
 };
 
 //Terminating Precompiler Directives

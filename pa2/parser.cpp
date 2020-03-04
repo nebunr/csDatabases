@@ -12,17 +12,17 @@ void ReadFile(ifstream &file)
 {
     //cmd and strInput are set for the command class
     string strInput;
-    string temp;
+    string strTemp;
     int cmd = -1;
     bool flag = false;
     Commands command;
     while(!file.eof() || !flag)
     {
         getline(file, strInput, '\n');
-        temp = strInput;
-        transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
+        strTemp = strInput;
+        transform(strTemp.begin(), strTemp.end(), strTemp.begin(), ::toupper);
         //For end of .sql file
-        if(temp.find(".EXIT") != string::npos)
+        if(strTemp.find(".EXIT") != string::npos)
         {
             //End reading file
             cout << "All done." << endl;
@@ -30,7 +30,7 @@ void ReadFile(ifstream &file)
             break;
         }
         //For comments
-        else if ((temp.find("--") != string::npos) || (temp.find(";") == string::npos))
+        else if ((strTemp.find("--") != string::npos))
         {
             //Do nothing
             //NOTE: 
@@ -41,7 +41,7 @@ void ReadFile(ifstream &file)
         else
         {
             //String parsing
-            cmd = ParseCommand(strInput, temp);
+            cmd = ParseCommand(strTemp);
             //Send command to commands function(s)
             if(cmd != -1)
             {
@@ -68,16 +68,33 @@ void ReadFile(ifstream &file)
                         command.DropTable();
                         break;
                     case ALTER_TABLE:
-                        command.UpdateTable();
+                        command.AlterTable();
                         break;
                     case SELECT_FROM:
                         command.QueryTable();
+                        break;
+                    case INSERT_INTO:
+                        command.InsertIntoTable();
+                        break;
+                    case UPDATE:
+                        command.UpdateTable();
+                        break;
+                    case SET:
+                        command.SetTable();
+                        break;
+                    case FROM:
+                        command.FromTable();
+                        break;
+                    case WHERE:
+                        command.WhereTable();
+                        break;
+                    case DELETE_FROM:
+                        command.DeleteFromTable();
                         break;
                     default:
                         break;
                 }
             }
-            
         }
     }
     return;
@@ -85,35 +102,59 @@ void ReadFile(ifstream &file)
 
 //Looks for SQL command to return
 //Uses enum from cmdstates.h
-int ParseCommand(string &str, string &temp)
+int ParseCommand(string &str)
 {
-    if(temp.find("CREATE DATABASE ") != string::npos)
+    if(str.find("CREATE DATABASE ") != string::npos)
     {
         return CREATE_DB;
     }
-    else if(temp.find("DROP DATABASE ") != string::npos)
+    else if(str.find("DROP DATABASE ") != string::npos)
     {
         return DROP_DB;
     }
-    else if(temp.find("USE ") != string::npos)
+    else if(str.find("USE ") != string::npos)
     {
         return USE;
     }
-    else if(temp.find("CREATE TABLE ") != string::npos)
+    else if(str.find("CREATE TABLE ") != string::npos)
     {
         return CREATE_TABLE;
     }
-    else if(temp.find("DROP TABLE ") != string::npos)
+    else if(str.find("DROP TABLE ") != string::npos)
     {
         return DROP_TABLE;
     }
-    else if(temp.find("ALTER TABLE ") != string::npos)
+    else if(str.find("ALTER TABLE ") != string::npos)
     {
         return ALTER_TABLE;
     }
-    else if((temp.find("SELECT ") != string::npos) && (temp.find(" FROM") !=string::npos))
+    else if((str.find("SELECT ") != string::npos) && (str.find(" FROM") !=string::npos))
     {
         return SELECT_FROM;
+    }
+    else if((str.find("INSERT ") != string::npos) && (str.find(" INTO") !=string::npos))
+    {
+        return INSERT_INTO;
+    }
+    else if(str.find("UPDATE ") != string::npos)
+    {
+        return UPDATE;
+    }
+    else if(str.find("SET ") != string::npos)
+    {
+        return SET;
+    }
+    else if(str.find("FROM ") != string::npos)
+    {
+        return FROM;
+    }
+    else if(str.find("WHERE ") != string::npos)
+    {
+        return WHERE;
+    }
+    else if((str.find("DELETE ") != string::npos) && (str.find(" FROM") !=string::npos))
+    {
+        return DELETE_FROM;
     }
     else
     {

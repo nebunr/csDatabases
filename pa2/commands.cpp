@@ -125,7 +125,7 @@ void Commands::CreateTable()
         //replace ", " with " | "
         size_t startPos = 0;
         string from = ", ";
-        string to = " | ";
+        string to = " | "; //may need to fix?
         while((startPos = strWrite.find(from, startPos)) != string::npos)
         {
             strWrite.replace(startPos, from.length(), to);
@@ -160,8 +160,8 @@ void Commands::DropTable()
     return;
 }
 
-//ALTER TABLE (Update)
-void Commands::UpdateTable()
+//ALTER TABLE
+void Commands::AlterTable()
 {
     string tempVar;
     stringstream ss(m_line);
@@ -199,7 +199,7 @@ void Commands::UpdateTable()
     return;
 }
 
-//SELECT * TABLE (Query)
+//SELECT * FROM (Query)
 void Commands::QueryTable()
 {
     string tempStr;
@@ -229,6 +229,42 @@ void Commands::QueryTable()
         file.close();
     }
 
+    return;
+}
+
+//INSERT INTO
+void Commands::InsertIntoTable()
+{
+    return;
+}
+
+//UPDATE
+void Commands::UpdateTable()
+{
+    return;
+}
+
+//SET
+void Commands::SetTable()
+{
+    return;
+}
+
+//FROM
+void Commands::FromTable()
+{
+    return;
+}
+
+//WHERE
+void Commands::WhereTable()
+{
+    return;
+}
+
+//DELETE FROM
+void Commands::DeleteFromTable()
+{
     return;
 }
 
