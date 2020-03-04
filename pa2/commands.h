@@ -27,7 +27,7 @@ class Commands{
         void SelectFromTable();
         //Tables (pa2)
         void SelectTable();
-        void InsertIntoTable(); //parse!
+        void InsertIntoTable(); //DONE
         void UpdateTable(); //DONE
         void SetTable();
         void FromTable();
@@ -45,6 +45,16 @@ class Commands{
         int m_command;
         std::string m_line;
         std::string m_file;
+};
+
+//Struct with boolean operator that returns 
+//true if char is a whitespace
+struct isSpace
+{
+    bool operator()(unsigned c)
+    {
+        return (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' || c == '\f');
+    }
 };
 
 //Terminating Precompiler Directives

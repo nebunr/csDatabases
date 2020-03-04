@@ -261,15 +261,25 @@ void Commands::InsertIntoTable()
         getline(ss, tempStr, '(');
         getline(ss, tempStr, ')');
         //parse values
-        //tempStr.erase(remove(tempStr.begin(), tempStr.end(), ' '), tempStr.end());
-
-
+        //removes whitespace
+        tempStr.erase(remove_if(tempStr.begin(), tempStr.end(), isSpace()), tempStr.end());
+        string strWrite;
+        strWrite = tempStr.substr(0, tempStr.size() - 1);
+        //replace "," with " | "
+        size_t startPos = 0;
+        string from = ",";
+        string to = " | "; //may need to fix?
+        while((startPos = strWrite.find(from, startPos)) != string::npos)
+        {
+            strWrite.replace(startPos, from.length(), to);
+            startPos += to.length();
+        }
         //open file
         ofstream file;
         file.open(tableName, ios_base::app);
         if(tempStr.size() >= 1)
         {
-            file << tempStr << endl;
+            file << strWrite << endl;
         }
         
         file.close();
