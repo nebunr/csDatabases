@@ -12,17 +12,17 @@ void ReadFile(ifstream &file)
 {
     //cmd and strInput are set for the command class
     string strInput;
-    string strTemp;
+    string strToupper;
     int cmd = -1;
     bool flag = false;
     Commands command;
     while(!file.eof() || !flag)
     {
         getline(file, strInput, '\n');
-        strTemp = strInput;
-        transform(strTemp.begin(), strTemp.end(), strTemp.begin(), ::toupper);
+        strToupper = strInput;
+        transform(strToupper.begin(), strToupper.end(), strToupper.begin(), ::toupper);
         //For end of .sql file
-        if(strTemp.find(".EXIT") != string::npos)
+        if(strToupper.find(".EXIT") != string::npos)
         {
             //End reading file
             cout << "All done." << endl;
@@ -30,7 +30,7 @@ void ReadFile(ifstream &file)
             break;
         }
         //For comments
-        else if ((strTemp.find("--") != string::npos))
+        else if ((strToupper.find("--") != string::npos))
         {
             //Do nothing
             //NOTE:
@@ -40,7 +40,7 @@ void ReadFile(ifstream &file)
         else
         {
             //String parsing
-            cmd = ParseCommand(strTemp);
+            cmd = ParseCommand(strToupper);
             //Send command to commands function(s)
             if(cmd != -1)
             {
@@ -70,7 +70,10 @@ void ReadFile(ifstream &file)
                         command.AlterTable();
                         break;
                     case SELECT_FROM:
-                        command.QueryTable();
+                        command.SelectFromTable();
+                        break;
+                    case SELECT:
+                        command.SelectTable();
                         break;
                     case INSERT_INTO:
                         command.InsertIntoTable();
@@ -130,6 +133,10 @@ int ParseCommand(string &str)
     else if((str.find("SELECT ") != string::npos) && (str.find(" FROM") !=string::npos))
     {
         return SELECT_FROM;
+    }
+    else if(str.find("SELECT ") != string::npos)
+    {
+        return SELECT;
     }
     else if((str.find("INSERT ") != string::npos) && (str.find(" INTO") !=string::npos))
     {

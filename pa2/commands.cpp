@@ -201,8 +201,8 @@ void Commands::AlterTable()
     return;
 }
 
-//SELECT * FROM (Query)
-void Commands::QueryTable()
+//SELECT * FROM (Query All)
+void Commands::SelectFromTable()
 {
     string tempStr;
     string tableName;
@@ -219,6 +219,7 @@ void Commands::QueryTable()
         file.open(tableName);
         if(file.is_open())
         {
+            SetFile(tableName);
             while(getline(file, tempStr))
             {
                 cout << tempStr << endl;
@@ -231,6 +232,12 @@ void Commands::QueryTable()
         file.close();
     }
 
+    return;
+}
+
+//SELECT (Query Specific)
+void Commands::SelectTable()
+{
     return;
 }
 

@@ -14,6 +14,7 @@ enum {
     DROP_TABLE,
     ALTER_TABLE,
     SELECT_FROM,
+    SELECT,
     INSERT_INTO,
     UPDATE,
     SET,

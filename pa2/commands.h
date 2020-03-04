@@ -24,8 +24,9 @@ class Commands{
         void CreateTable();
         void DropTable();
         void AlterTable();
-        void QueryTable();
+        void SelectFromTable();
         //Tables (pa2)
+        void SelectTable();
         void InsertIntoTable(); //parse!
         void UpdateTable(); //DONE
         void SetTable();
