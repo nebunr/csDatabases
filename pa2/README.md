@@ -15,5 +15,5 @@ $ make
 
 To run:
 ```bash
-$ ./pa PA1_test.sql
+$ ./pa PA2_test.sql
 ```
