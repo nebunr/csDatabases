@@ -1,6 +1,6 @@
 # CS 457 PA2: Basic Data Manipulation
 
-## By: Benjamin Estela (2/20/2020)
+## By: Benjamin Estela (3/12/2020)
 
 ### Overview
 This is a C++ program that manages the metadata of an .sql script.   
