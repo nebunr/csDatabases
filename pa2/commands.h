@@ -14,7 +14,7 @@ class Commands{
     public:
         //Constructors
         Commands();
-        Commands(int command, std::string line);
+        Commands(int command, std::string line, std::string file);
         ~Commands();
         //Databases
         void CreateDatabase();
@@ -26,8 +26,8 @@ class Commands{
         void AlterTable();
         void QueryTable();
         //Tables (pa2)
-        void InsertIntoTable();
-        void UpdateTable();
+        void InsertIntoTable(); //parse!
+        void UpdateTable(); //DONE
         void SetTable();
         void FromTable();
         void WhereTable();
@@ -35,12 +35,15 @@ class Commands{
         //Set Methods
         void SetCommand(int command);
         void SetLine(std::string m_line);
+        void SetFile(std::string m_file);
         //Get Methods
         int GetCommand();
         std::string GetLine();
+        std::string GetFile();
     private:
         int m_command;
         std::string m_line;
+        std::string m_file;
 };
 
 //Terminating Precompiler Directives

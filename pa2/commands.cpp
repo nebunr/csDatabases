@@ -11,13 +11,15 @@ Commands::Commands()
 {
     m_command = -1;
     m_line = "";
+    m_file = "";
 }
 
 //Parameterized Constructor
-Commands::Commands(int command, string line)
+Commands::Commands(int command, string line, string file)
 {
     m_command = command;
     m_line = line;
+    m_file = file;
 }
 
 //Destructor (not fully implemented)
@@ -26,14 +28,14 @@ Commands::~Commands(){}
 //CREATE DATABASE
 void Commands::CreateDatabase()
 {
-    string tempVar;
+    string tempStr;
     stringstream ss(m_line);
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ';'); //temp is now the variable
-    int len = tempVar.length();
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ';'); //tempStr is now the variable
+    int len = tempStr.length();
     char fileName[len + 1];
-    strcpy(fileName, tempVar.c_str());
+    strcpy(fileName, tempStr.c_str());
     if(mkdir(fileName, 0777) == -1)
     {
         cerr << "!Failed to create database " << fileName << " because it already exists." << endl;
@@ -48,14 +50,14 @@ void Commands::CreateDatabase()
 //DROP DATABASE
 void Commands::DropDatabase()
 {
-    string tempVar;
+    string tempStr;
     stringstream ss(m_line);
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ';'); //temp is now the variable
-    int len = tempVar.length();
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ';'); //tempStr is now the variable
+    int len = tempStr.length();
     char fileName[len + 1];
-    strcpy(fileName, tempVar.c_str());
+    strcpy(fileName, tempStr.c_str());
     //rmdir removes folder
     if(rmdir(fileName) == -1)
     {
@@ -70,13 +72,13 @@ void Commands::DropDatabase()
 //USE
 void Commands::Use()
 {
-    string tempVar;
+    string tempStr;
     stringstream ss(m_line);
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ';'); //temp is now the variable
-    int len = tempVar.length();
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ';'); //tempStr is now the variable
+    int len = tempStr.length();
     char folderName[len + 1];
-    strcpy(folderName, tempVar.c_str());
+    strcpy(folderName, tempStr.c_str());
     //chdir is basically cd in bash
     if(chdir(folderName) == -1)
     {
@@ -103,25 +105,25 @@ void Commands::Use()
 //CREATE TABLE
 void Commands::CreateTable()
 {
-    string tempVar;
+    string tempStr;
     stringstream ss(m_line);
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ' '); //temp is now the variable
-    if(access(tempVar.c_str(), F_OK) != -1)
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' '); //tempStr is now the variable
+    if(access(tempStr.c_str(), F_OK) != -1)
     {
-        cerr << "!Failed to create table " << tempVar.c_str() << " because it already exists." << endl;
+        cerr << "!Failed to create table " << tempStr.c_str() << " because it already exists." << endl;
     }
     else
     {
         ofstream file;
-        file.open(tempVar.c_str());
-        cout << "Table " << tempVar.c_str() << " created." << endl;
+        file.open(tempStr.c_str());
+        cout << "Table " << tempStr.c_str() << " created." << endl;
         //Splits up parameters.
-        getline(ss, tempVar, '(');
-        getline(ss, tempVar, ';');
+        getline(ss, tempStr, '(');
+        getline(ss, tempStr, ';');
         string strWrite;
-        strWrite = tempVar.substr(0, tempVar.size() - 1);
+        strWrite = tempStr.substr(0, tempStr.size() - 1);
         //replace ", " with " | "
         size_t startPos = 0;
         string from = ", ";
@@ -131,7 +133,7 @@ void Commands::CreateTable()
             strWrite.replace(startPos, from.length(), to);
             startPos += to.length();
         }
-        file << strWrite;
+        file << strWrite << endl;
         file.close();
         
     }
@@ -142,19 +144,19 @@ void Commands::CreateTable()
 //DROP TABLE
 void Commands::DropTable()
 {
-    string tempVar;
+    string tempStr;
     stringstream ss(m_line);
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ';'); //temp is now the variable
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ';'); //tempStr is now the variable
     //remove deletes a file
-    if(remove(tempVar.c_str()) != 0)
+    if(remove(tempStr.c_str()) != 0)
     {
-        cerr << "!Failed to delete table " << tempVar.c_str() << " because it does not exist." << endl;
+        cerr << "!Failed to delete table " << tempStr.c_str() << " because it does not exist." << endl;
     }
     else
     {
-        cout << "Table " << tempVar.c_str() << " deleted." << endl;
+        cout << "Table " << tempStr.c_str() << " deleted." << endl;
     }
 
     return;
@@ -163,29 +165,29 @@ void Commands::DropTable()
 //ALTER TABLE
 void Commands::AlterTable()
 {
-    string tempVar;
+    string tempStr;
     stringstream ss(m_line);
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ' ');
-    getline(ss, tempVar, ' '); //temp is now the variable
-    int len = tempVar.length();
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' '); //tempStr is now the variable
+    int len = tempStr.length();
     char tableName[len + 1];
-    strcpy(tableName, tempVar.c_str());
+    strcpy(tableName, tempStr.c_str());
 
-    string tempStr = m_line;
-    transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::toupper);
+    string toupperStr = m_line;
+    transform(toupperStr.begin(), toupperStr.end(), toupperStr.begin(), ::toupper);
 
     //Can add more ALTER COMMANDS in the future
     //ADD is basically concat to the end of the table
-    if(tempStr.find("ADD") != string::npos)
+    if(toupperStr.find("ADD") != string::npos)
     {
-        getline(ss, tempVar, ' ');
-        getline(ss, tempVar, ';');
+        getline(ss, tempStr, ' ');
+        getline(ss, tempStr, ';');
         ofstream file;
         file.open(tableName, ios_base::app);
-        if(tempVar.size() >= 1)
+        if(tempStr.size() >= 1)
         {
-            file << " | " << tempVar; //TODO: better parsing for more vars
+            file << " | " << tempStr; //TODO: better parsing for more vars
         }
         
         file.close();
@@ -235,12 +237,64 @@ void Commands::QueryTable()
 //INSERT INTO
 void Commands::InsertIntoTable()
 {
+    string tempStr;
+    stringstream ss(m_line);
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' '); //tempStr is now the variable
+    int len = tempStr.length();
+    char tableName[len + 1];
+    strcpy(tableName, tempStr.c_str());
+
+    string toupperStr = m_line;
+    transform(toupperStr.begin(), toupperStr.end(), toupperStr.begin(), ::toupper);
+
+    if(toupperStr.find("VALUES") != string::npos)
+    {
+        getline(ss, tempStr, '(');
+        getline(ss, tempStr, ')');
+        //parse values
+        //tempStr.erase(remove(tempStr.begin(), tempStr.end(), ' '), tempStr.end());
+
+
+        //open file
+        ofstream file;
+        file.open(tableName, ios_base::app);
+        if(tempStr.size() >= 1)
+        {
+            file << tempStr << endl;
+        }
+        
+        file.close();
+
+        //can only handle 1 record at a time
+        cout << "1 new record inserted." << endl;
+    }
+    else
+    {
+        cerr << "!Failed to insert into table" << tableName << "due to invalid command." << endl;
+    }
     return;
 }
 
 //UPDATE
 void Commands::UpdateTable()
 {
+    string tempStr;
+    stringstream ss(m_line);
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, '\n');
+    ifstream file;
+    file.open(tempStr);
+    if(file.is_open())
+    {
+        SetFile(tempStr);
+    }
+    else
+    {
+        cerr << "!Failed to find table " << tempStr << " because it does not exist." << endl;
+    }
+    file.close();
     return;
 }
 
@@ -279,6 +333,11 @@ void Commands::SetLine(string line)
     m_line = line;
 }
 
+void Commands::SetFile(string file)
+{
+    m_file = file;
+}
+
 //Get Methods
 int Commands::GetCommand()
 {
@@ -288,4 +347,9 @@ int Commands::GetCommand()
 string Commands::GetLine()
 {
     return m_line;
+}
+
+string Commands::GetFile()
+{
+    return m_file;
 }

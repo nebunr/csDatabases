@@ -33,8 +33,7 @@ void ReadFile(ifstream &file)
         else if ((strTemp.find("--") != string::npos))
         {
             //Do nothing
-            //NOTE: 
-            //  Due to this conditional, every non-commented functional line needs a ";". 
+            //NOTE:
             //  May need to fix in the future
         }
         //For all main functionality
