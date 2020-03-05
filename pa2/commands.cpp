@@ -377,6 +377,11 @@ void Commands::FromTable()
 //WHERE
 void Commands::WhereTable()
 {
+    if(GetFile() == "")
+    {
+        cerr << "!Invalid table name." << endl;
+        return;
+    }
     if(GetManipulation() == UPDATE_DATA)
     {
         cout << "UPDATE WHERE?" << endl;
