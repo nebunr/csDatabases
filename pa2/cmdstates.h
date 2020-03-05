@@ -6,6 +6,7 @@
 #define CMDSTATES_H
 
 //Enumeration Declaration
+//For .sql commands
 enum {
     CREATE_DB,
     DROP_DB,
@@ -21,6 +22,13 @@ enum {
     FROM,
     WHERE,
     DELETE_FROM,
+};
+//For data manipulation
+enum {
+    NONE_DATA,
+    UPDATE_DATA,
+    DELETE_DATA,
+    SELECT_DATA,
 };
 
 //Terminating Precompiler Directives

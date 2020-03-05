@@ -7,6 +7,7 @@
 
 //Header Files
 #include "database_headers.h"
+#include "cmdstates.h"
 
 //Class Prototypes
 //Commands class holds the important variables needed to execute the .sql commands
@@ -14,7 +15,6 @@ class Commands{
     public:
         //Constructors
         Commands();
-        Commands(int command, std::string line, std::string file);
         ~Commands();
         //Databases
         void CreateDatabase();
@@ -26,25 +26,31 @@ class Commands{
         void AlterTable();
         void SelectFromTable();
         //Tables (pa2)
-        void SelectTable();
-        void InsertIntoTable(); //DONE
-        void UpdateTable(); //DONE
-        void SetTable();
-        void FromTable();
-        void WhereTable();
-        void DeleteFromTable();
+        void SelectTable(); //DONE*
+        void InsertIntoTable(); //DONE*
+        void UpdateTable(); //DONE*
+        void SetTable(); //DONE*
+        void FromTable(); //DONE*
+        void WhereTable(); //life is pain
+        void DeleteFromTable(); //DONE*
         //Set Methods
         void SetCommand(int command);
-        void SetLine(std::string m_line);
-        void SetFile(std::string m_file);
+        void SetManipulation(int manipulation);
+        void SetLine(std::string line);
+        void SetFile(std::string file);
+        void SetPrevSQL(std::string prevsql);
         //Get Methods
         int GetCommand();
+        int GetManipulation();
         std::string GetLine();
         std::string GetFile();
+        std::string GetPrevSQL();
     private:
         int m_command;
+        int m_manipulation;
         std::string m_line;
         std::string m_file;
+        std::string m_prevsql;
 };
 
 //Struct with boolean operator that returns 

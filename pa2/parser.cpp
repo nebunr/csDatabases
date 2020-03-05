@@ -29,8 +29,8 @@ void ReadFile(ifstream &file)
             flag = true;
             break;
         }
-        //For comments
-        else if ((strToupper.find("--") != string::npos))
+        //For comments and whitespace
+        else if ((strToupper.find("--") != string::npos) || strToupper.size() < 2)
         {
             //Do nothing
             //NOTE:
@@ -150,6 +150,10 @@ int ParseCommand(string &str)
     {
         return SET;
     }
+    else if((str.find("DELETE ") != string::npos) && (str.find(" FROM") !=string::npos))
+    {
+        return DELETE_FROM;
+    }
     else if(str.find("FROM ") != string::npos)
     {
         return FROM;
@@ -157,10 +161,6 @@ int ParseCommand(string &str)
     else if(str.find("WHERE ") != string::npos)
     {
         return WHERE;
-    }
-    else if((str.find("DELETE ") != string::npos) && (str.find(" FROM") !=string::npos))
-    {
-        return DELETE_FROM;
     }
     else
     {

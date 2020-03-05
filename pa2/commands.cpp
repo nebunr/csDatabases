@@ -10,16 +10,10 @@ using namespace std;
 Commands::Commands()
 {
     m_command = -1;
+    m_manipulation = NONE_DATA;
     m_line = "";
     m_file = "";
-}
-
-//Parameterized Constructor
-Commands::Commands(int command, string line, string file)
-{
-    m_command = command;
-    m_line = line;
-    m_file = file;
+    m_prevsql = "";
 }
 
 //Destructor (not fully implemented)
@@ -222,7 +216,10 @@ void Commands::SelectFromTable()
             SetFile(tableName);
             while(getline(file, tempStr))
             {
-                cout << tempStr << endl;
+                if(tempStr.size() > 2) //test more
+                {
+                    cout << tempStr << endl;
+                }
             }
         }
         else
@@ -238,6 +235,21 @@ void Commands::SelectFromTable()
 //SELECT (Query Specific)
 void Commands::SelectTable()
 {
+    string tempStr;
+    stringstream ss(m_line);
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, '\n');
+    if(!tempStr.empty())
+    {
+        tempStr.pop_back();
+        if(tempStr.back() == ' ')
+        {
+            tempStr.pop_back();
+        }
+    }
+    //cout << "Query:" << tempStr << "+" << endl;
+    SetPrevSQL(tempStr);
+    SetManipulation(SELECT_DATA);
     return;
 }
 
@@ -264,7 +276,7 @@ void Commands::InsertIntoTable()
         //removes whitespace
         tempStr.erase(remove_if(tempStr.begin(), tempStr.end(), isSpace()), tempStr.end());
         string strWrite;
-        strWrite = tempStr.substr(0, tempStr.size() - 1);
+        strWrite = tempStr.substr(0, tempStr.size());
         //replace "," with " | "
         size_t startPos = 0;
         string from = ",";
@@ -300,12 +312,15 @@ void Commands::UpdateTable()
     string tempStr;
     stringstream ss(m_line);
     getline(ss, tempStr, ' ');
-    getline(ss, tempStr, '\n');
+    getline(ss, tempStr, '\n'); //???
+    tempStr.erase(remove_if(tempStr.begin(), tempStr.end(), isSpace()), tempStr.end());
     ifstream file;
     file.open(tempStr);
     if(file.is_open())
     {
         SetFile(tempStr);
+        SetManipulation(UPDATE_DATA);
+        //cout << "Table to update: " << tempStr << endl;
     }
     else
     {
@@ -318,24 +333,97 @@ void Commands::UpdateTable()
 //SET
 void Commands::SetTable()
 {
+    string tempStr;
+    stringstream ss(m_line);
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, '\n');
+    if(!tempStr.empty())
+    {
+        tempStr.pop_back();
+        if(tempStr.back() == ' ')
+        {
+            tempStr.pop_back();
+        }
+    }
+    SetPrevSQL(tempStr);
+    //cout << "set: " << tempStr << "+" << endl;
     return;
 }
 
 //FROM
 void Commands::FromTable()
 {
+    string tempStr;
+    stringstream ss(m_line);
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, '\n'); //???
+    tempStr.erase(remove_if(tempStr.begin(), tempStr.end(), isSpace()), tempStr.end());
+    ifstream file;
+    file.open(tempStr);
+    if(file.is_open())
+    {
+        SetFile(tempStr);
+        SetManipulation(UPDATE_DATA);
+        //cout << "Table to query: " << tempStr << endl;
+    }
+    else
+    {
+        cerr << "!Failed to find table " << tempStr << " because it does not exist." << endl;
+    }
+    file.close();
     return;
 }
 
 //WHERE
 void Commands::WhereTable()
 {
+    if(GetManipulation() == UPDATE_DATA)
+    {
+        cout << "UPDATE WHERE?" << endl;
+    }
+    else if(GetManipulation() == DELETE_DATA)
+    {
+        cout << "DELETE WHERE?" << endl;
+    }
+    else if(GetManipulation() == SELECT_DATA)
+    {
+        cout << "SELECT WHERE?" << endl;
+    }
+    else
+    {
+        cerr << "!Failed to manipulate data as improper function was read in." << endl;
+    }
+
+    //With data manipulation complete, the table name does not need to be stored anymore.
+    SetManipulation(NONE_DATA);
+    SetFile("");
+    SetPrevSQL("");
     return;
 }
 
 //DELETE FROM
 void Commands::DeleteFromTable()
 {
+    //cout << "DELETE" << endl;
+    string tempStr;
+    stringstream ss(m_line);
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, ' ');
+    getline(ss, tempStr, '\n');
+    tempStr.erase(remove_if(tempStr.begin(), tempStr.end(), isSpace()), tempStr.end());
+    ifstream file;
+    file.open(tempStr);
+    if(file.is_open())
+    {
+        SetFile(tempStr);
+        SetManipulation(DELETE_DATA);
+        //cout << "Table to delete: " << tempStr << endl;
+    }
+    else
+    {
+        cerr << "!Failed to find table " << tempStr << " because it does not exist." << endl;
+    }
+    file.close();
     return;
 }
 
@@ -343,6 +431,11 @@ void Commands::DeleteFromTable()
 void Commands::SetCommand(int command)
 {
     m_command = command;
+}
+
+void Commands::SetManipulation(int manipulation)
+{
+    m_manipulation = manipulation;
 }
 
 void Commands::SetLine(string line)
@@ -355,10 +448,20 @@ void Commands::SetFile(string file)
     m_file = file;
 }
 
+void Commands::SetPrevSQL(string prevsql)
+{
+    m_prevsql = prevsql;
+}
+
 //Get Methods
 int Commands::GetCommand()
 {
     return m_command;
+}
+
+int Commands::GetManipulation()
+{
+    return m_manipulation;
 }
 
 string Commands::GetLine()
@@ -369,4 +472,9 @@ string Commands::GetLine()
 string Commands::GetFile()
 {
     return m_file;
+}
+
+string Commands::GetPrevSQL()
+{
+    return m_prevsql;
 }
