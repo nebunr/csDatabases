@@ -23,7 +23,7 @@ class CommandHandler:
 #Free Function Definitions
 
 #CREATE DATABASE
-def CreateDatabase(line, cmd):
+def CreateDatabase(line):
     dbName = line.split(" ")[2]
     dbName = dbName.split(";")[0]
     try:
@@ -34,7 +34,7 @@ def CreateDatabase(line, cmd):
     return
 
 #DROP DATABASE
-def DropDatabase(line, cmd):
+def DropDatabase(line):
     dbName = line.split(" ")[2]
     dbName = dbName.split(";")[0]
     try:
@@ -45,7 +45,7 @@ def DropDatabase(line, cmd):
     return
 
 #USE
-def Use(line, cmd):
+def Use(line):
     dbName = line.split(" ")[1]
     dbName = dbName.split(";")[0]
     try:
@@ -61,13 +61,13 @@ def Use(line, cmd):
     return
 
 #CREATE TABLE
-def CreateTable(line, cmd):
+def CreateTable(line):
     tableName = line.split(" ")[2]
     paramaters = line.split(" ", 3)[3]
     paramaters = paramaters.replace(";", "")
     paramaters = paramaters[1:]
     paramaters = paramaters[:-1]
-    paramaters = paramaters.replace(", ", " | ")
+    paramaters = paramaters.replace(", ", "|")
     if not (os.path.exists(tableName)):
         fileName = open(tableName, "w")
         fileName.write(paramaters)
@@ -77,7 +77,7 @@ def CreateTable(line, cmd):
     return
 
 #DROP TABLE
-def DropTable(line, cmd):
+def DropTable(line):
     tableName = line.split(" ")[2]
     tableName = tableName.split(";")[0]
     if os.path.exists(tableName):
@@ -88,22 +88,22 @@ def DropTable(line, cmd):
     return
 
 #ALTER TABLE
-def AlterTable(line, cmd):
+def AlterTable(line):
     tableName = line.split(" ")[2]
     parameters = line.split(" ", 4)[4]
     parameters = parameters.replace(";", "")
-    parameters = parameters.replace(", ", " | ")
+    parameters = parameters.replace(", ", "|")
     if(line.split(" ")[3] == "ADD"):
         if os.path.exists(tableName):
             fileName = open(tableName, "a+")
-            fileName.write(" | %s" %parameters)
+            fileName.write("|%s" %parameters)
             print("Table %s modified." %tableName)
         else:
             print("!Failed to modify table %s because it does not exist." %tableName)
     return
 
 #SELECT * FROM (Query All)
-def SelectFromTable(line, cmd):
+def SelectFromTable(line):
     tableName = line.split(" ")[3]
     tableName = tableName.split(";")[0]
     if(line.upper().find(" * ") != -1):
@@ -117,28 +117,87 @@ def SelectFromTable(line, cmd):
 
 #SELECT (Query Specfic)
 def SelectTable(line, cmd):
+    cmd.PrevSQL = line.split(" ", 1)[1]
+    cmd.PrevSQL = cmd.PrevSQL.strip()
+    cmd.PrevSQL = cmd.PrevSQL.replace(" ", "")
+    cmd.PrevSQL = cmd.PrevSQL.replace(",", "|")
+    cmd.DataManipulation = cmdName.SELECT
     return
 
 #INSERT INTO
+#TODO: Issue with single quotes
 def InsertIntoTable(line, cmd):
+    tableName = line.split(" ")[2]
+    paramaters = line.split(" ", 3)[3]
+    paramaters = paramaters.split(";")[0]
+    paramaters = paramaters.replace("\t", "")
+    paramaters = paramaters.replace(" ", "")
+    #paramaters = paramaters.replace("'", "")
+    if(paramaters.upper().split("(")[0] == "VALUES"):
+        paramaters = paramaters.split("(")[1]
+        paramaters = paramaters[:-1]
+        paramaters = paramaters.replace(",", "|")
+        if os.path.exists(tableName):
+            fileName = open(tableName, "a+")
+            fileName.write("\n%s" %paramaters)
+            print("1 new record inserted.")
+        else:
+            print("!Failed to insert into table %s because it does not exist." %tableName)
     return
 
 #UPDATE
 def UpdateTable(line, cmd):
+    tableName = line.split(" ", 1)[1]
+    tableName = tableName.strip()
+    if os.path.exists(tableName):
+        cmd.TableName = tableName
+        cmd.DataManipulation = cmdName.UPDATE
+    else:
+        print("!Failed to find table %s because it does not exist." %tableName)
     return
 
 #SET
 def SetTable(line, cmd):
+    cmd.PrevSQL = line.split(" ", 1)[1]
+    cmd.PrevSQL = cmd.PrevSQL.strip()
     return
 
 #FROM
 def FromTable(line, cmd):
-    return
-
-#WHERE
-def WhereTable(line, cmd):
+    tableName = line.split(" ", 1)[1]
+    tableName = tableName.strip()
+    if os.path.exists(tableName):
+        cmd.TableName = tableName
+    else:
+        print("!Failed to find table %s because it does not exist." %tableName)
     return
 
 #DELETE FROM
 def DeleteFromTable(line, cmd):
+    tableName = line.split(" ", 2)[2]
+    tableName = tableName.strip()
+    if os.path.exists(tableName):
+        cmd.TableName = tableName
+        cmd.DataManipulation = cmdName.DELETE
+    else:
+        print("!Failed to find table %s because it does not exist." %tableName)
+    return
+
+#WHERE
+#TODO: AT LEAST PYTHON IS NICE
+def WhereTable(line, cmd):
+    whereStr = line.split(" ", 1)[1]
+    whereStr = whereStr.strip()
+    whereStr = whereStr.replace(";", "")
+    if(cmd.DataManipulation == cmdName.UPDATE):
+        print("UPDATE")
+    elif(cmd.DataManipulation == cmdName.DELETE):
+        print("DELETE")
+    elif(cmd.DataManipulation == cmdName.SELECT):
+        print("SELECT")
+    else:
+        print("!Invalid use of the WHERE command.")
+    cmd.TableName = ""
+    cmd.PrevSQL = ""
+    cmd.DataManipulation = ""
     return

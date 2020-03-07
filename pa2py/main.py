@@ -29,19 +29,19 @@ def ReadLine(line, cmd):
     #create it's appropriate function in commands.py
     else:
         if(line.upper().find("CREATE DATABASE ") != -1):
-            commands.CreateDatabase(line, cmd)
+            commands.CreateDatabase(line)
         elif(line.upper().find("DROP DATABASE ") != -1):
-            commands.DropDatabase(line, cmd)
+            commands.DropDatabase(line)
         elif(line.upper().find("USE ") != -1):
-            commands.Use(line, cmd)
+            commands.Use(line)
         elif(line.upper().find("CREATE TABLE ") != -1):
-            commands.CreateTable(line, cmd)
+            commands.CreateTable(line)
         elif(line.upper().find("DROP TABLE ") != -1):
-            commands.DropTable(line, cmd)
+            commands.DropTable(line)
         elif(line.upper().find("ALTER TABLE ") != -1):
-            commands.AlterTable(line, cmd)
+            commands.AlterTable(line)
         elif((line.upper().find("SELECT ") != -1) and (line.upper().find(" FROM") != -1)):
-            commands.SelectFromTable(line, cmd)
+            commands.SelectFromTable(line)
         elif(line.upper().find("SELECT ") != -1):
             commands.SelectTable(line, cmd)
         elif((line.upper().find("INSERT ") != -1) and (line.upper().find(" INTO") != -1)):
