@@ -6,6 +6,7 @@ Class: CS 457
 
 #Header Files
 import os
+import array as arr
 
 #Enumeration Definition
 class cmdName(enumerate):
@@ -67,11 +68,12 @@ def CreateTable(line):
     paramaters = paramaters.replace(";", "")
     paramaters = paramaters[1:]
     paramaters = paramaters[:-1]
-    paramaters = paramaters.replace(", ", "|")
+    paramaters = paramaters.replace(", ", " | ")
     if not (os.path.exists(tableName)):
         fileName = open(tableName, "w")
         fileName.write(paramaters)
         print("Table %s created." %tableName)
+        fileName.close()
     else:
         print("!Failed to create table %s because it already exists." %tableName)
     return
@@ -97,6 +99,7 @@ def AlterTable(line):
         if os.path.exists(tableName):
             fileName = open(tableName, "a+")
             fileName.write("|%s" %parameters)
+            fileName.close()
             print("Table %s modified." %tableName)
         else:
             print("!Failed to modify table %s because it does not exist." %tableName)
@@ -140,6 +143,7 @@ def InsertIntoTable(line, cmd):
         if os.path.exists(tableName):
             fileName = open(tableName, "a+")
             fileName.write("\n%s" %paramaters)
+            fileName.close()
             print("1 new record inserted.")
         else:
             print("!Failed to insert into table %s because it does not exist." %tableName)
@@ -189,14 +193,41 @@ def WhereTable(line, cmd):
     whereStr = line.split(" ", 1)[1]
     whereStr = whereStr.strip()
     whereStr = whereStr.replace(";", "")
+    if not os.path.exists(cmd.TableName):
+        print("!Failed to find table %s because it does not exist." %cmd.TableName)
+        return
+
+
+    fileName = open(cmd.TableName, "r+")
+
+
+    #firstLine = fileName.readline()
+    #parametersCount = firstLine.count(" ") + 1
+    #parameters = ["0", "1", "2", "3", "4"]
+    #parameters[0] = firstLine.split(" ")[0]
+    #for x in range(1, parametersCount - 1):
+    #    parameters[x] = firstLine.split(" ")[x]
+
+
+
+
     if(cmd.DataManipulation == cmdName.UPDATE):
-        print("UPDATE")
+        if(whereStr.split(" ")[1] == "="):
+            for each in fileName:
+                if(each.find(whereStr.split(" ")[2]) != -1):
+                    print("WE DID IT")
+                    #fileName.write(line.replace(whereStr.split(" ")[2]))
+        #cmd.PrevSQL.split(" ")[2]
+        #for each in fileName:
+            #if(line.find(whereStr))
+        #print("UPDATE")
     elif(cmd.DataManipulation == cmdName.DELETE):
         print("DELETE")
     elif(cmd.DataManipulation == cmdName.SELECT):
         print("SELECT")
     else:
         print("!Invalid use of the WHERE command.")
+    fileName.close()
     cmd.TableName = ""
     cmd.PrevSQL = ""
     cmd.DataManipulation = ""
