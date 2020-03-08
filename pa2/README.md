@@ -8,10 +8,12 @@ This is a Python 3 (was C++ in PA1) program that manages the metadata of an .sql
 ### Instructions (Linux/Ubuntu)
 Unzip the given `bestela_pa2.zip` source code then navigate to where it has been extracted.
 
-To build:
+To run:
 ```bash
 $ python3 main.py PA2_test.sql
 ```
+
+NOTE: PA1_test.sql as a command line argument should still be working.
 
 ### Python Modules
 The following standard Python modules are used:
