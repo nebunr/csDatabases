@@ -200,7 +200,7 @@ def WhereTable(line, cmd):
     whereStr = whereStr.strip()
     whereStr = whereStr.replace(";", "")
     whereStr = whereStr.replace("'","")
-    
+
     #Open table for reading
     with open(cmd.TableName, "r") as file:
         data = file.readlines()
@@ -219,28 +219,63 @@ def WhereTable(line, cmd):
             parametersIndex = index
         if(str(cmd.PrevSQL.split(" ")[0]) == str(parameters[index])):
             setIndex = index
-    
+
     count = 0
     index = 1
-
+    #UPDATE only supports "="
     if(cmd.DataManipulation == cmdName.UPDATE):
         if(whereStr.split(" ")[1] == "="):
             for index, each in enumerate(data):
-                if(each.split("|")[parametersIndex] == whereStr.split(" ")[2]):
-                    data[index] = each.replace(each.split("|")[setIndex], cmd.PrevSQL.split(" ")[2]) + "\n"
-                    count = count + 1
+                if(index != 0):
+                    if(each.split("|")[parametersIndex] == whereStr.split(" ")[2]):
+                        data[index] = each.replace(each.split("|")[setIndex], cmd.PrevSQL.split(" ")[2]) + "\n"
+                        count = count + 1
+        #Print amount of records (>0) modified
+        if(count > 0):
+            if(count == 1):
+                print("1 record modified.")
+            else:
+                print("%i records modified." %count)
+    #DELETE only suports "=", ">"
     elif(cmd.DataManipulation == cmdName.DELETE):
-        print("DELETE")
+        if(whereStr.split(" ")[1] == "="):
+            for index, each in enumerate(data):
+                if(index != 0):
+                    if(each.split("|")[parametersIndex] == whereStr.split(" ")[2]):
+                        data[index] = ""
+                        count = count + 1
+        #assumes float values, may need error handling in the future
+        elif(whereStr.split(" ")[1] == ">"):
+            for index, each in enumerate(data):
+                if(index != 0):
+                    if(float(each.split("|")[parametersIndex]) > float(whereStr.split(" ")[2])):
+                        data[index] = ""
+                        count = count + 1
+        #Print amount of records (>0) deleted
+        if(count > 0):
+            if(count == 1):
+                print("1 record deleted.")
+            else:
+                print("%i records deleted." %count)
+    #SELECT only supports "!="
     elif(cmd.DataManipulation == cmdName.SELECT):
-        print("SELECT")
+        queryStr = ""
+        if(whereStr.split(" ")[1] == "!="):
+            for index, each in enumerate(data):
+                if(index != 0):
+                    if(float(each.split("|")[parametersIndex]) != float(whereStr.split(" ")[2])):
+                        for x in range(0, cmd.PrevSQL.count("|")+1):
+                            for y in range(0, len(parameters)):
+                                if(cmd.PrevSQL.split("|")[x] == parameters[y]):
+                                    queryStr += each.split("|")[y] + "|"
+                                    if(y == len(parameters)):
+                                        queryStr += "\n"
+            queryStr = queryStr[:-1]
+            print(data[0].strip())
+            print(queryStr.strip())
     else:
         print("!Invalid use of the WHERE command.")
 
-    if(count > 0):
-        if(count == 1):
-            print("1 record modified.")
-        else:
-            print("%i records modified." %count)
     with open(cmd.TableName, "w") as file:
         file.writelines(data)
     file.close()
