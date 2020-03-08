@@ -6,7 +6,8 @@ Class: CS 457
 
 #Header Files
 import os
-import array as arr
+import fileinput
+import sys
 
 #Enumeration Definition
 class cmdName(enumerate):
@@ -68,7 +69,7 @@ def CreateTable(line):
     paramaters = paramaters.replace(";", "")
     paramaters = paramaters[1:]
     paramaters = paramaters[:-1]
-    paramaters = paramaters.replace(", ", " | ")
+    paramaters = paramaters.replace(", ", "|")
     if not (os.path.exists(tableName)):
         fileName = open(tableName, "w")
         fileName.write(paramaters)
@@ -128,14 +129,13 @@ def SelectTable(line, cmd):
     return
 
 #INSERT INTO
-#TODO: Issue with single quotes
 def InsertIntoTable(line, cmd):
     tableName = line.split(" ")[2]
     paramaters = line.split(" ", 3)[3]
     paramaters = paramaters.split(";")[0]
     paramaters = paramaters.replace("\t", "")
     paramaters = paramaters.replace(" ", "")
-    #paramaters = paramaters.replace("'", "")
+    paramaters = paramaters.replace("'", "")
     if(paramaters.upper().split("(")[0] == "VALUES"):
         paramaters = paramaters.split("(")[1]
         paramaters = paramaters[:-1]
@@ -164,6 +164,7 @@ def UpdateTable(line, cmd):
 def SetTable(line, cmd):
     cmd.PrevSQL = line.split(" ", 1)[1]
     cmd.PrevSQL = cmd.PrevSQL.strip()
+    cmd.PrevSQL = cmd.PrevSQL.replace("'", "")
     return
 
 #FROM
@@ -190,44 +191,59 @@ def DeleteFromTable(line, cmd):
 #WHERE
 #TODO: AT LEAST PYTHON IS NICE
 def WhereTable(line, cmd):
-    whereStr = line.split(" ", 1)[1]
-    whereStr = whereStr.strip()
-    whereStr = whereStr.replace(";", "")
     if not os.path.exists(cmd.TableName):
         print("!Failed to find table %s because it does not exist." %cmd.TableName)
         return
 
+    #Parse WHERE command
+    whereStr = line.split(" ", 1)[1]
+    whereStr = whereStr.strip()
+    whereStr = whereStr.replace(";", "")
+    whereStr = whereStr.replace("'","")
+    
+    #Open table for reading
+    with open(cmd.TableName, "r") as file:
+        data = file.readlines()
+    file.close()
 
-    fileName = open(cmd.TableName, "r+")
-
-
-    #firstLine = fileName.readline()
-    #parametersCount = firstLine.count(" ") + 1
-    #parameters = ["0", "1", "2", "3", "4"]
-    #parameters[0] = firstLine.split(" ")[0]
-    #for x in range(1, parametersCount - 1):
-    #    parameters[x] = firstLine.split(" ")[x]
-
-
-
+    #Set parameters in a list
+    firstLine = data[0]
+    parametersIndex = firstLine.count(" ")
+    firstLine = firstLine.replace("|", " ")
+    parameters = [""]
+    parameters[0] = firstLine.split(" ")[0]
+    for index in range(1, parametersIndex):
+        parameters.append(firstLine.split(" ")[index * 2])
+    for index in range(len(parameters)):
+        if(str(whereStr.split(" ")[0]) == str(parameters[index])):
+            parametersIndex = index
+        if(str(cmd.PrevSQL.split(" ")[0]) == str(parameters[index])):
+            setIndex = index
+    
+    count = 0
+    index = 1
 
     if(cmd.DataManipulation == cmdName.UPDATE):
         if(whereStr.split(" ")[1] == "="):
-            for each in fileName:
-                if(each.find(whereStr.split(" ")[2]) != -1):
-                    print("WE DID IT")
-                    #fileName.write(line.replace(whereStr.split(" ")[2]))
-        #cmd.PrevSQL.split(" ")[2]
-        #for each in fileName:
-            #if(line.find(whereStr))
-        #print("UPDATE")
+            for index, each in enumerate(data):
+                if(each.split("|")[parametersIndex] == whereStr.split(" ")[2]):
+                    data[index] = each.replace(each.split("|")[setIndex], cmd.PrevSQL.split(" ")[2]) + "\n"
+                    count = count + 1
     elif(cmd.DataManipulation == cmdName.DELETE):
         print("DELETE")
     elif(cmd.DataManipulation == cmdName.SELECT):
         print("SELECT")
     else:
         print("!Invalid use of the WHERE command.")
-    fileName.close()
+
+    if(count > 0):
+        if(count == 1):
+            print("1 record modified.")
+        else:
+            print("%i records modified." %count)
+    with open(cmd.TableName, "w") as file:
+        file.writelines(data)
+    file.close()
     cmd.TableName = ""
     cmd.PrevSQL = ""
     cmd.DataManipulation = ""
