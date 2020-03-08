@@ -56,17 +56,15 @@ def Use(line):
             os.chdir(dbName)
             print("Using database ../%s." %dbName)
         except:
-            print("!Cannot access datbase %s." %dbName)
+            print("!Cannot access database %s." %dbName)
     return
 
 #CREATE TABLE
 def CreateTable(line):
     tableName = line.split(" ")[2]
     paramaters = line.split(" ", 3)[3]
-    paramaters = paramaters.replace(";", "")
-    paramaters = paramaters[1:]
-    paramaters = paramaters[:-1]
-    paramaters = paramaters.replace(", ", "|")
+    paramaters = paramaters.strip().replace(";", "").replace(", ", "|")
+    paramaters = paramaters[1:-1]
     if not (os.path.exists(tableName)):
         fileName = open(tableName, "w")
         fileName.write(paramaters)
@@ -91,8 +89,7 @@ def DropTable(line):
 def AlterTable(line):
     tableName = line.split(" ")[2]
     parameters = line.split(" ", 4)[4]
-    parameters = parameters.replace(";", "")
-    parameters = parameters.replace(", ", "|")
+    parameters = parameters.replace(";", "").replace(", ", "|")
     if(line.split(" ")[3] == "ADD"):
         if os.path.exists(tableName):
             fileName = open(tableName, "a+")
@@ -119,9 +116,7 @@ def SelectFromTable(line):
 #SELECT (Query Specfic)
 def SelectTable(line, cmd):
     cmd.PrevSQL = line.split(" ", 1)[1]
-    cmd.PrevSQL = cmd.PrevSQL.strip()
-    cmd.PrevSQL = cmd.PrevSQL.replace(" ", "")
-    cmd.PrevSQL = cmd.PrevSQL.replace(",", "|")
+    cmd.PrevSQL = cmd.PrevSQL.strip().replace(" ", "").replace(",", "|")
     cmd.DataManipulation = cmdName.SELECT
     return
 
@@ -129,14 +124,10 @@ def SelectTable(line, cmd):
 def InsertIntoTable(line, cmd):
     tableName = line.split(" ")[2]
     paramaters = line.split(" ", 3)[3]
-    paramaters = paramaters.split(";")[0]
-    paramaters = paramaters.replace("\t", "")
-    paramaters = paramaters.replace(" ", "")
-    paramaters = paramaters.replace("'", "")
+    paramaters = paramaters.split(";")[0].replace("\t", "").replace(" ", "").replace("'", "")
     if(paramaters.upper().split("(")[0] == "VALUES"):
-        paramaters = paramaters.split("(")[1]
+        paramaters = paramaters.split("(")[1].replace(",", "|")
         paramaters = paramaters[:-1]
-        paramaters = paramaters.replace(",", "|")
         if os.path.exists(tableName):
             fileName = open(tableName, "a+")
             fileName.write("\n%s" %paramaters)
@@ -160,8 +151,7 @@ def UpdateTable(line, cmd):
 #SET
 def SetTable(line, cmd):
     cmd.PrevSQL = line.split(" ", 1)[1]
-    cmd.PrevSQL = cmd.PrevSQL.strip()
-    cmd.PrevSQL = cmd.PrevSQL.replace("'", "")
+    cmd.PrevSQL = cmd.PrevSQL.strip().replace("'", "")
     return
 
 #FROM
@@ -193,14 +183,11 @@ def WhereTable(line, cmd):
 
     #Parse WHERE command
     whereStr = line.split(" ", 1)[1]
-    whereStr = whereStr.strip()
-    whereStr = whereStr.replace(";", "")
-    whereStr = whereStr.replace("'","")
+    whereStr = whereStr.strip().replace(";", "").replace("'","")
 
     #Open table for reading
     with open(cmd.TableName, "r") as file:
         data = file.readlines()
-    file.close()
 
     #Set parameters in a list
     firstLine = data[0]
@@ -215,9 +202,8 @@ def WhereTable(line, cmd):
             parametersIndex = index
         if(str(cmd.PrevSQL.split(" ")[0]) == str(parameters[index])):
             setIndex = index
-
     count = 0
-    index = 1
+
     #UPDATE only supports "="
     if(cmd.DataManipulation == cmdName.UPDATE):
         if(whereStr.split(" ")[1] == "="):
@@ -227,11 +213,10 @@ def WhereTable(line, cmd):
                         data[index] = each.replace(each.split("|")[setIndex], cmd.PrevSQL.split(" ")[2]) + "\n"
                         count = count + 1
         #Print amount of records (>0) modified
-        if(count > 0):
-            if(count == 1):
-                print("1 record modified.")
-            else:
-                print("%i records modified." %count)
+        if(count == 1):
+            print("1 record modified.")
+        elif(count > 1):
+            print("%i records modified." %count)
     #DELETE only suports "=", ">"
     elif(cmd.DataManipulation == cmdName.DELETE):
         if(whereStr.split(" ")[1] == "="):
@@ -248,34 +233,32 @@ def WhereTable(line, cmd):
                         data[index] = ""
                         count = count + 1
         #Print amount of records (>0) deleted
-        if(count > 0):
-            if(count == 1):
-                print("1 record deleted.")
-            else:
-                print("%i records deleted." %count)
+        if(count == 1):
+            print("1 record deleted.")
+        elif(count > 1):
+            print("%i records deleted." %count)
     #SELECT only supports "!="
     elif(cmd.DataManipulation == cmdName.SELECT):
         queryStr = ""
         if(whereStr.split(" ")[1] == "!="):
             for index, each in enumerate(data):
                 if(index != 0):
-                    if(float(each.split("|")[parametersIndex]) != float(whereStr.split(" ")[2])):
+                    if(each.split("|")[parametersIndex] != whereStr.split(" ")[2]):
                         for x in range(0, cmd.PrevSQL.count("|")+1):
                             for y in range(0, len(parameters)):
                                 if(cmd.PrevSQL.split("|")[x] == parameters[y]):
                                     queryStr += each.split("|")[y] + "|"
                                     if(y == len(parameters)):
                                         queryStr += "\n"
-            queryStr = queryStr[:-1]
             print(data[0].strip())
-            print(queryStr.strip())
+            print(queryStr[:-1].strip())
     else:
         print("!Invalid use of the WHERE command.")
 
     with open(cmd.TableName, "w") as file:
         file.writelines(data)
-    file.close()
+
     cmd.TableName = ""
     cmd.PrevSQL = ""
-    cmd.DataManipulation = ""
+    cmd.DataManipulation = cmdName.NONE
     return
