@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
 
-"""
-File: Main Python3 File
-By: Benjamin Estela
-Class: CS 457
-Notes:
-    Assuming it is ran like below:
-    $ python3 main.py PA#_test.sql
-    then len(sys.argv) is 2 and sys.argv[1] is PA#_test.sql
-"""
+#File: Main Python3 File
+#By: Benjamin Estela
+#Class: CS 457
 
 #Header Files
 import commands
-#Packages
+#Modules
 import sys
 
 #Free Function Definitions

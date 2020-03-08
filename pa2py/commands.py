@@ -1,13 +1,10 @@
-"""
-File: Command Handler
-By: Benjamin Estela
-Class: CS 457
-"""
+#File: Command Handler
+#By: Benjamin Estela
+#Class: CS 457
 
 #Header Files
+#Modules
 import os
-import fileinput
-import sys
 
 #Enumeration Definition
 class cmdName(enumerate):
@@ -189,7 +186,6 @@ def DeleteFromTable(line, cmd):
     return
 
 #WHERE
-#TODO: AT LEAST PYTHON IS NICE
 def WhereTable(line, cmd):
     if not os.path.exists(cmd.TableName):
         print("!Failed to find table %s because it does not exist." %cmd.TableName)

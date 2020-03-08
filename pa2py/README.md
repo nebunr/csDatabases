@@ -14,5 +14,6 @@ $ python3 main.py PA2_test.sql
 ```
 
 ### Python Modules
-The following Python modules are used:
+The following standard Python modules are used:
 - sys
+- os
