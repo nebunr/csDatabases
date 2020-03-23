@@ -23,28 +23,30 @@ def ReadLine(line, cmd):
     #create it's appropriate function in commands.py
     else:
         if(line.upper().find("CREATE DATABASE ") != -1):
-            commands.CreateDatabase(line)
+            commands.CreateDatabase(line[16:])
         elif(line.upper().find("DROP DATABASE ") != -1):
-            commands.DropDatabase(line)
+            commands.DropDatabase(line[14:])
         elif(line.upper().find("USE ") != -1):
-            commands.Use(line)
+            commands.Use(line[4:])
         elif(line.upper().find("CREATE TABLE ") != -1):
-            commands.CreateTable(line)
+            commands.CreateTable(line[13:])
         elif(line.upper().find("DROP TABLE ") != -1):
-            commands.DropTable(line)
+            commands.DropTable(line[11:])
         elif(line.upper().find("ALTER TABLE ") != -1):
-            commands.AlterTable(line)
-        elif((line.upper().find("SELECT ") != -1) and (line.upper().find(" FROM") != -1)):
-            commands.SelectFromTable(line)
+            commands.AlterTable(line[12:])
+        elif((line.upper().find("SELECT ") != -1) and (line.upper().find(" FROM ") != -1)):
+            if(line.upper().split(" ")[1] == "*"):
+                commands.SelectFromTable(line[14:])
         elif(line.upper().find("SELECT ") != -1):
             commands.SelectTable(line, cmd)
-        elif((line.upper().find("INSERT ") != -1) and (line.upper().find(" INTO") != -1)):
-            commands.InsertIntoTable(line, cmd)
+        elif((line.upper().find("INSERT ") != -1) and (line.upper().find(" INTO ") != -1)):
+            if(line.upper().split("(")[0].find("VALUES") != -1):
+                commands.InsertIntoTable(line, cmd)
         elif(line.upper().find("UPDATE ") != -1):
             commands.UpdateTable(line, cmd)
         elif(line.upper().find("SET ") != -1):
             commands.SetTable(line, cmd)
-        elif((line.upper().find("DELETE ") != -1) and (line.upper().find(" FROM") != -1)):
+        elif((line.upper().find("DELETE ") != -1) and (line.upper().find(" FROM ") != -1)):
             commands.DeleteFromTable(line, cmd)
         elif(line.upper().find("FROM ") != -1):
             commands.FromTable(line, cmd)

@@ -21,17 +21,17 @@ set price = 14.99
 where name = 'Gizmo';
 
 select * from Product;
---was 'product' but program is case sensitive
-delete from Product 
+
+delete from product 
 where name = 'Gizmo';
---was 'product' but program is case sensitive
-delete from Product 
+
+delete from product 
 where price > 150;
---was 'product' but program is case sensitive
+
 select * from Product;
---was 'product' but program is case sensitive
+
 select name, price 
-from Product 
+from product 
 where pid != 2;
 
 .exit
