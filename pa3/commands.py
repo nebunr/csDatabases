@@ -2,7 +2,6 @@
 #By: Benjamin Estela
 #Class: CS 457
 
-#Header Files
 #Modules
 import os
 
@@ -20,7 +19,6 @@ class CommandHandler:
     PrevSQL = ""
 
 #Free Function Definitions
-
 #CREATE DATABASE
 def CreateDatabase(line):
     tableName = line.split(";")[0].lower()

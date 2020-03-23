@@ -20,7 +20,7 @@ def ReadLine(line, cmd):
         return
     #Everything Else/SQL Commands
     #For new commands, just add onto the if-else statements and 
-    #create it's appropriate function in commands.py
+    #create its appropriate function in commands.py
     else:
         if(line.upper().find("CREATE DATABASE ") != -1):
             commands.CreateDatabase(line[16:])
@@ -54,13 +54,13 @@ def ReadLine(line, cmd):
             commands.WhereTable(line, cmd)
         else:
             print("!Invalid command found.")
-    return
 
 #Main Function
 if __name__ == '__main__':
-    if(len(sys.argv) < 2):
-        exit("!No filename found.")
+    try:
+        sqlFile = open(str(sys.argv[1]), "r").read().splitlines()
+    except:
+        exit("!No filename found in command line argument.")
     cmd = commands.CommandHandler()
-    sqlFile = open(str(sys.argv[1]), "r").read().splitlines()
     for line in sqlFile:
         ReadLine(line, cmd)
