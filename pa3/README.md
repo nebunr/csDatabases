@@ -1,6 +1,6 @@
 # CS 457 PA3: Table Joins
 
-## By: Benjamin Estela (4/9/2020)
+## By: Benjamin Estela (5/6/2020)
 
 ### Overview
 This is a Python 3 program that manages the metadata of an .sql script.   
