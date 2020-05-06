@@ -315,11 +315,14 @@ def OnTable(line, cmd):
                     if(each1.split("|")[index1] == each2.split("|")[index2]):
                         dataJoin += each1.strip() + "|" + each2.strip() + "\n"
         print(dataJoin.strip())
+
     #LEFT OUTER JOIN
     elif(cmd.DataManipulation == cmdName.LEFT_OUTER_JOIN):
         dataJoin = ""
         for index, each1 in enumerate(data1):
             flag = False
+            if(index == 0):
+                flag = True
             for index, each2 in enumerate(data2):
                 if(index != 0):
                     if(each1.split("|")[index1] == each2.split("|")[index2]):
@@ -333,4 +336,3 @@ def OnTable(line, cmd):
         print(dataJoin.strip())
     else:
         print("!Invalid use of the ON command.")
-    return
