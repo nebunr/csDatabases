@@ -38,7 +38,10 @@ def ReadLine(line, cmd):
             if(line.upper().split(" ")[1] == "*"):
                 commands.SelectFromTable(line[14:])
         elif(line.upper().find("SELECT ") != -1):
-            commands.SelectTable(line, cmd)
+            if(line.upper().split(" ")[1] == "*"):
+                commands.SelectTable(line, cmd, 1)
+            else:
+                commands.SelectTable(line, cmd, 0)
         elif((line.upper().find("INSERT ") != -1) and (line.upper().find(" INTO ") != -1)):
             if(line.upper().split("(")[0].find("VALUES") != -1):
                 commands.InsertIntoTable(line, cmd)
@@ -51,7 +54,12 @@ def ReadLine(line, cmd):
         elif(line.upper().find("FROM ") != -1):
             commands.FromTable(line, cmd)
         elif(line.upper().find("WHERE ") != -1):
-            commands.WhereTable(line, cmd)
+            if(cmd.DataManipulation != commands.cmdName.INNER_JOIN):
+                commands.WhereTable(line, cmd)
+            else:
+                commands.OnTable(line, cmd)
+        elif(line.upper().find("ON ") != -1):
+            commands.OnTable(line, cmd)
         else:
             print("!Invalid command found.")
 
