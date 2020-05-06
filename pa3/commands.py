@@ -259,68 +259,78 @@ def WhereTable(line, cmd):
 
 #ON
 def OnTable(line, cmd):
-    #INNER JOIN only supports "=""
+    #INNER JOIN and LEFT OUTER JOIN only supports "="
+    line = line.lower().split(" ",1)[1].replace(";", "").strip()
+    if(line.find("=") != -1):
+        line = line.replace(" ", "")
+    else:
+        print("!Unsupported operation found in JOIN.")
+        return
+
+    table1 = cmd.PrevSQL.split(" ", 1)[0]
+    table2 = cmd.PrevSQL.split("|", 1)[1].split(" ", 1)[0]
+    var1 = cmd.PrevSQL.split("|", 1)[0].split(" ", 1)[1]
+    var2 = cmd.PrevSQL.split("|", 1)[1].split(" ", 1)[1]
+    param1 = line.split("=",1)[0].split(".")[1]
+    param2 = line.split("=",1)[1].split(".")[1]
+    
+    #Error Handling
+    if(((line.split("=")[0].split(".")[0] == var1) and (line.split("=")[1].split(".")[0] == var2)) or (line.split("=")[0].split(".")[0] == var2) and (line.split("=")[1].split(".")[0] == var1)):
+        if(line.split("=")[0].split(".")[0] == var2) and (line.split("=")[1].split(".")[0] == var1):
+            paramTemp = param1
+            param1 = param2
+            param2 = paramTemp
+    else:
+        print("!Unexpected variables used in WHERE or ON line.")
+        return
+    if not os.path.exists(table1):
+        print("!Failed to find table %s because it does not exist." %table1)
+        return
+    if not os.path.exists(table2):
+        print("!Failed to find table %s because it does not exist." %table2)
+        return
+
+    #Open tables for reading
+    with open(table1, "r") as file:
+        data1 = file.readlines()
+    with open(table2, "r") as file:
+        data2 = file.readlines()
+    
+    #Set paramater indices
+    for index in range(data1[0].count("|")):
+        if(data1[0].split("|")[index].find(param1) != 1):
+            index1 = index
+    for index in range(data2[0].count("|")):
+        if(data2[0].split("|")[index].find(param2) != 1):
+            index2 = index
+    firstLine = data1[0].strip() + "|" + data2[0].strip()
+    print(firstLine)
+
+    #INNER JOIN
     if(cmd.DataManipulation == cmdName.INNER_JOIN):
-        line = line.lower().split(" ",1)[1].replace(";", "").strip()
-        if(line.find("=") != -1):
-            line = line.replace(" ", "")
-        else:
-            print("!Unsupported operation found in INNER JOIN.")
-            return
-
-        table1 = cmd.PrevSQL.split(" ", 1)[0]
-        var1 = cmd.PrevSQL.split("|", 1)[0].split(" ", 1)[1]
-        table2 = cmd.PrevSQL.split("|", 1)[1].split(" ", 1)[0]
-        var2 = cmd.PrevSQL.split("|", 1)[1].split(" ", 1)[1]
-
-        param1 = line.split("=",1)[0].split(".")[1]
-        param2 = line.split("=",1)[1].split(".")[1]
-
-        if(((line.split("=")[0].split(".")[0] == var1) and (line.split("=")[1].split(".")[0] == var2)) or (line.split("=")[0].split(".")[0] == var2) and (line.split("=")[1].split(".")[0] == var1)):
-            if(line.split("=")[0].split(".")[0] == var2) and (line.split("=")[1].split(".")[0] == var1):
-                paramTemp = param1
-                param1 = param2
-                param2 = paramTemp
-        else:
-            print("!Unexpected variables used in WHERE or ON line.")
-            return
-        
-        if not os.path.exists(table1):
-            print("!Failed to find table %s because it does not exist." %table1)
-            return
-
-        if not os.path.exists(table2):
-            print("!Failed to find table %s because it does not exist." %table2)
-            return
-
-        #Open table for reading
-        with open(table1, "r") as file:
-            data1 = file.readlines()
-        with open(table2, "r") as file:
-            data2 = file.readlines()
-
-        firstLine = data1[0].strip() + "|" + data2[0].strip()
-        for index in range(data1[0].count("|")):
-            if(data1[0].split("|")[index].find(param1) != 1):
-                index1 = index
-        for index in range(data2[0].count("|")):
-            if(data2[0].split("|")[index].find(param2) != 1):
-                index2 = index
-
         dataJoin = ""
         for index, each1 in enumerate(data1):
             for index, each2 in enumerate(data2):
                 if(index != 0):
                     if(each1.split("|")[index1] == each2.split("|")[index2]):
                         dataJoin += each1.strip() + "|" + each2.strip() + "\n"
-        print(firstLine)
         print(dataJoin.strip())
-
-        #print(table1, "+", table2, "+", var1, "+", var2, "+", param1, "+", param2)
-
-    #OUTER JOIN
+    #LEFT OUTER JOIN
     elif(cmd.DataManipulation == cmdName.LEFT_OUTER_JOIN):
-        print("ON: LEFT OUTER JOIN")
+        dataJoin = ""
+        for index, each1 in enumerate(data1):
+            flag = False
+            for index, each2 in enumerate(data2):
+                if(index != 0):
+                    if(each1.split("|")[index1] == each2.split("|")[index2]):
+                        dataJoin += each1.strip() + "|" + each2.strip() + "\n"
+                        flag = True
+            if(flag == False):
+                dataJoin += each1.strip()
+                for _ in range(data2[0].count("|")):
+                    dataJoin += "|"
+                dataJoin += "|\n"
+        print(dataJoin.strip())
     else:
         print("!Invalid use of the ON command.")
     return
